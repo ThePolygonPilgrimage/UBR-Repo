@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     CharacterController cc;
     Vector2 moveInput;
     Vector3 rootmotion;
+    public float gravitySmooth = 0.015f;
     public GameObject playerObj;
     //public bool isScoping;
     //public Camera scopeCam;
@@ -32,6 +33,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Movement();
+
+        if(cc.isGrounded == false)
+        {
+            rootmotion += Physics.gravity * gravitySmooth;
+        }
     }
 
     private void OnAnimatorMove()
