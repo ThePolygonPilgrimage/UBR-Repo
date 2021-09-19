@@ -1084,6 +1084,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   username: 
   clearPrefs: 0
+  playerPrefab: {fileID: 1871148083276623732, guid: 3882dd40144ad7949988f1f6b25e8141,
+    type: 3}
 --- !u!4 &2126883797
 Transform:
   m_ObjectHideFlags: 0

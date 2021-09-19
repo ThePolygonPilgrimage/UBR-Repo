@@ -104,5 +104,6 @@ public class LaunchManager : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
         Debug.Log(cause);
     }
+
     #endregion
 }
