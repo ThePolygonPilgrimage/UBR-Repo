@@ -13,6 +13,7 @@ public class LaunchManager : MonoBehaviourPunCallbacks
 
     public string username;
     public bool clearPrefs;
+    public GameObject playerPrefab;
 
     #region Unity Methods
     void Awake()
@@ -103,6 +104,45 @@ public class LaunchManager : MonoBehaviourPunCallbacks
     {
         base.OnDisconnected(cause);
         Debug.Log(cause);
+    }
+    public override void OnJoinedLobby()
+    {
+        Debug.Log(PhotonNetwork.NickName + " has joined the lobby with " + PhotonNetwork.CountOfPlayers + " players & " + PhotonNetwork.CountOfRooms + " rooms created");
+    }
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("We have joined " + PhotonNetwork.CurrentRoom.Name + " with " + PhotonNetwork.CurrentRoom.PlayerCount + " players");
+        PhotonNetwork.AutomaticallySyncScene = true;
+
+        //Enter a random spot to spawn
+        int randPoint = Random.Range(-10, 10);
+
+        //Spawn the player into the game scene
+        PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(randPoint, 0f, randPoint), Quaternion.identity);
+    }
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        //If a room fails to be made this will be called from the Matchmaking script
+        Matchmaking.instance.CreateRoomOnClick();
+        Debug.Log(message);
+    }
+    public override void OnCreatedRoom()
+    {
+        Debug.Log("New Room was Created");
+        Debug.Log("Created " + PhotonNetwork.CurrentRoom.Name);
+
+        //This will be our created room after clicking the button
+        Matchmaking.instance.CreateRoomOnClick();
+    }
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
+        Debug.Log(newPlayer + " has entered " + PhotonNetwork.CurrentRoom.Name);
+    }
+    public override void OnLeftRoom()
+    {
+        //Player has left the current match and has returned back to the loading screen
+        PhotonNetwork.LoadLevel(1);
     }
 
     #endregion
