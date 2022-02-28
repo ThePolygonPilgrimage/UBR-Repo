@@ -37,14 +37,19 @@ public class CameraController : MonoBehaviour
         instance = this;
     }
 
-    void FixedUpdate()
-    {
-        float yawCamera = followCamTarget.transform.rotation.eulerAngles.y;
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.fixedDeltaTime);
-    }
+    //void /*Fixed*/Update()
+    //{
+    //    //float yawCamera = followCamTarget.transform.rotation.eulerAngles.y;
+    //    //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.fixedDeltaTime);
+    //}
 
     void LateUpdate()
     {
+        //Added
+        float yawCamera = followCamTarget.transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.fixedDeltaTime);
+        //Added
+
         newRotation.y += Input.GetAxis("Mouse X") * rotSpeed.y;
         newRotation.x -= Input.GetAxis("Mouse Y") * rotSpeed.x;
         newRotation.x = Mathf.Clamp(newRotation.x, pitchClamp.y, pitchClamp.x);

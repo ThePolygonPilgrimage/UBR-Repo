@@ -6,13 +6,26 @@ public class PlayerController : MonoBehaviour
 {
     //Vars
     public static PlayerController instance;
+    [Header("Movement Speed")]
     public float speed;
+
+    [Header("Jump Settings")]
+    public float jump = 3f;   
+    private float groundDistance = 0.2f;
+    private float gravityValue = -9.81f;
+    public LayerMask groundMask;
+    public float airFriction = 0.5f;
+
+    [Header("Components")]
     public Animator anim;
+    public GameObject playerObj;
+    public Transform groundCheck;
+
+    private Vector3 velocity;
+    private bool isGrounded;
     CharacterController cc;
     Vector2 moveInput;
     Vector3 rootmotion;
-    public float gravitySmooth = 0.015f;
-    public GameObject playerObj;
     //public bool isScoping;
     //public Camera scopeCam;
     //public KeyCode button;
@@ -33,11 +46,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Movement();
-
-        if(cc.isGrounded == false)
-        {
-            rootmotion += Physics.gravity * gravitySmooth;
-        }
+        HandleJump();
     }
 
     private void OnAnimatorMove()
@@ -55,5 +64,24 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(rootmotion);
         rootmotion = Vector3.zero;
+    }
+
+    public void HandleJump()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            anim.SetTrigger("Jump");
+            velocity.y = Mathf.Sqrt(jump * -1.0f * gravityValue);
+        }
+
+        velocity.y += gravityValue * Time.deltaTime;
+        cc.Move(velocity * Time.deltaTime);
     }
 }
